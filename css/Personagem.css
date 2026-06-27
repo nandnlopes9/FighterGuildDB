@@ -1,0 +1,302 @@
+
+:root {
+    --primary-bg: #0a0820;
+    --secondary-bg: #120d2e;
+    --accent-purple: #8b5cf6;
+    --accent-pink: #ec4899;
+    --accent-cyan: #06b6d4;
+    --text-primary: #ffffff;
+    --text-secondary: #cbd5e1;
+    --glow-purple: rgba(139, 92, 246, 0.5);
+    --glow-pink: rgba(236, 72, 153, 0.5);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: linear-gradient(135deg, var(--primary-bg) 0%, var(--secondary-bg) 100%);
+    color: var(--text-primary);
+    font-family: 'Rajdhani', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+header {
+    position: relative;
+    z-index: 100;
+    background: rgba(18, 13, 46, 0.8);
+    backdrop-filter: blur(10px);
+    border-bottom: 2px solid var(--accent-purple);
+    box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3);
+}
+
+nav {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 1.5rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.logo-icon {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    box-shadow: 0 0 20px var(--glow-purple);
+}
+
+.nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+}
+
+.nav-links a {
+    color: var(--text-primary);
+    text-decoration: none;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent-purple), var(--accent-pink));
+    transition: width 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: var(--accent-cyan);
+    text-shadow: 0 0 10px var(--accent-cyan);
+}
+
+.nav-links a:hover::after {
+    width: 100%;
+}
+
+.brand {
+    font-family: 'Bungee', cursive;
+    font-size: 1.2rem;
+    background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 2px;
+}
+
+main {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.character-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+}
+
+.character-hero {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 2rem;
+    align-items: stretch;
+}
+
+.character-image-card,
+.character-info-card {
+    background: rgba(18, 13, 46, 0.75);
+    border: 1px solid rgba(139, 92, 246, 0.35);
+    border-radius: 20px;
+    padding: 1.5rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(10px);
+}
+
+.character-info-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 2.5rem;
+}
+
+.character-image {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    border-radius: 16px;
+    background-image: linear-gradient(180deg, rgba(0,0,0,0.15), rgba(0,0,0,0.45)), url("Frieren.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.character-meta {
+    margin-top: 1rem;
+    text-align: center;
+    padding: 0.9rem 1rem;
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.04);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03);
+}
+
+.character-meta-name {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 900;
+    letter-spacing: 2px;
+    color: var(--accent-cyan);
+    margin-bottom: 0.35rem;
+    text-transform: uppercase;
+}
+
+.character-meta-archetype,
+.character-meta-difficulty {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: 0.5px;
+}
+
+.character-meta-difficulty {
+    margin-top: 0.25rem;
+    color: var(--accent-pink);
+}
+
+.character-name {
+    font-family: 'Bungee', cursive;
+    font-size: 2rem;
+    color: var(--accent-cyan);
+    margin-bottom: 0.8rem;
+    letter-spacing: 2px;
+}
+
+.character-subtitle {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--accent-pink);
+    margin-bottom: 0.8rem;
+}
+
+.character-history {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: var(--text-secondary);
+    letter-spacing: 0.3px;
+    text-align: justify;
+}
+
+.games-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.games-section .section-title {
+    margin-bottom: 0;
+}
+
+.game-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 2rem;
+    margin-top: 0.5rem;
+}
+
+.game-card {
+    position: relative;
+    border-radius: 15px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    border: 2px solid rgba(139, 92, 246, 0.3);
+    background: transparent;
+}
+
+.game-card:hover {
+    transform: scale(1.05);
+    border-color: var(--accent-pink);
+    box-shadow: 0 15px 50px rgba(236, 72, 153, 0.6);
+}
+
+.game-card-visual {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    text-align: center;
+    color: white;
+    overflow: hidden;
+    border-radius: 15px;
+    background: linear-gradient(180deg, #3b82f6 0%, #1e40af 100%);
+}
+
+.game-card-visual--street::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.1), rgba(0,0,0,0.6));
+}
+
+.game-card-visual--tekken::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.1), rgba(0,0,0,0.6));
+}
+
+.game-card-visual--dbf::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.1), rgba(0,0,0,0.6));
+}
+
+.game-card-visual span {
+    position: relative;
+    z-index: 2;
+    margin-bottom: 1rem;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1rem;
+    font-weight: 900;
+    line-height: 1.2;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #ffffff;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9), 0 0 18px rgba(0, 0, 0, 0.8);
+}
+
+@media (max-width: 900px) {
+    .character-hero {
+        grid-template-columns: 1fr;
+    }
+}

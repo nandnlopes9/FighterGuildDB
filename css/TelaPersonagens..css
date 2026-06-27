@@ -1,0 +1,274 @@
+
+:root {
+    --primary-bg: #0a0820;
+    --secondary-bg: #120d2e;
+    --accent-purple: #8b5cf6;
+    --accent-pink: #ec4899;
+    --accent-cyan: #06b6d4;
+    --text-primary: #ffffff;
+    --text-secondary: #cbd5e1;
+    --glow-purple: rgba(139, 92, 246, 0.5);
+    --glow-pink: rgba(236, 72, 153, 0.5);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: linear-gradient(135deg, var(--primary-bg) 0%, var(--secondary-bg) 100%);
+    color: var(--text-primary);
+    font-family: 'Rajdhani', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+header {
+    position: relative;
+    z-index: 100;
+    background: rgba(18, 13, 46, 0.8);
+    backdrop-filter: blur(10px);
+    border-bottom: 2px solid var(--accent-purple);
+    box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3);
+}
+
+nav {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 1.5rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.logo-icon {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    box-shadow: 0 0 20px var(--glow-purple);
+}
+
+.nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+}
+
+.nav-links a {
+    color: var(--text-primary);
+    text-decoration: none;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent-purple), var(--accent-pink));
+    transition: width 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: var(--accent-cyan);
+    text-shadow: 0 0 10px var(--accent-cyan);
+}
+
+.nav-links a:hover::after {
+    width: 100%;
+}
+
+.brand {
+    font-family: 'Bungee', cursive;
+    font-size: 1.2rem;
+    background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 2px;
+}
+
+main {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.page-layout {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+}
+
+.main-content {
+    flex: 1;
+}
+
+.filters-panel {
+    width: 280px;
+    background: rgba(18, 13, 46, 0.75);
+    border: 1px solid rgba(139, 92, 246, 0.35);
+    border-radius: 18px;
+    padding: 1.25rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(10px);
+    position: sticky;
+    top: 1.5rem;
+}
+
+.filters-panel h3 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--accent-cyan);
+    margin-bottom: 1rem;
+}
+
+.filters-panel label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.filters-panel span {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+}
+
+.filters-panel select {
+    border: 1px solid rgba(139, 92, 246, 0.35);
+    border-radius: 10px;
+    padding: 0.7rem 0.8rem;
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.95rem;
+}
+
+.filters-panel select option {
+    color: #111827;
+    background: #ffffff;
+}
+
+.filters-panel select:focus {
+    outline: none;
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.25);
+}
+
+.banner-tagline {
+    text-align: center;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 2rem 0;
+    letter-spacing: 3px;
+    color: var(--accent-cyan);
+    text-shadow: 0 0 15px var(--accent-cyan);
+}
+
+.trending-section {
+    margin: 4rem 0;
+}
+
+.section-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2rem;
+    font-weight: 900;
+    margin-bottom: 2rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--accent-cyan);
+    text-shadow: 0 0 10px var(--accent-cyan);
+}
+
+.game-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.game-card {
+    
+    position: relative;
+    border-radius: 15px;
+    overflow: visible;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    border: 2px solid rgba(139, 92, 246, 0.3);
+    background: transparent;
+}
+
+.game-card:hover {
+    transform: scale(1.05);
+    border-color: var(--accent-pink);
+    box-shadow: 0 15px 50px rgba(236, 72, 153, 0.6);
+}
+
+.game-card-visual {
+    
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    text-align: center;
+    color: white;
+    overflow: hidden;
+    border-radius: 15px;
+    background: linear-gradient(180deg, #3b82f6 0%, #1e40af 100%);
+    background-image: 
+     linear-gradient(
+            to top,
+            rgba(0, 0, 0, 0.75) 0%,
+            rgba(0, 0, 0, 0.35) 40%,
+            rgba(0, 0, 0, 0) 70%
+     ),
+    url("Frieren.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.game-card-visual span {
+    
+    position: relative;
+    z-index: 2;
+    margin-bottom: 1rem;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1rem;
+    font-weight: 900;
+    line-height: 1.2;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #ffffff;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9), 0 0 18px rgba(0, 0, 0, 0.8);
+}
