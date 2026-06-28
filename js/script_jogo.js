@@ -3,6 +3,8 @@ import * as conexao from './conexaoBD.js';
 const secaoP = document.getElementById('personagens');
 const capaJogo = document.getElementById('capaJogo');
 const title = document.getElementById('title');
+let jogoId
+let jogoNome
 
 async function carregarDados() {
     const dadosJogo = await conexao.select('jogo', '*');
@@ -19,10 +21,13 @@ async function carregarDados() {
 
     const dadosPersonagem = await conexao.selectIgual(
         'personagem_jogo',
-        'icone, personagem(nome, historia)',
+        'id, id_personagem, icone, personagem(id, nome, historia)',
         'id_jogo',
         jogo.id
     );
+
+    jogoId = jogo.id;
+    jogoNome = jogo.nome;
 
     renderizarPersonagens(dadosPersonagem ?? []);
 }
@@ -33,7 +38,34 @@ function renderizarPersonagens(personagens) {
     personagens.forEach((personagem) => {
         const cardPersonagem = document.createElement('article');
         cardPersonagem.className = 'card_character';
+        cardPersonagem.tabIndex = 0;
+        cardPersonagem.setAttribute('role', 'button');
         cardPersonagem.innerHTML = criarSVG(personagem.icone);
+
+        const personagemId = personagem.id_personagem ?? personagem.personagem?.id ?? personagem.id;
+        const personagemNome = personagem.personagem?.nome ?? '';
+        const params = new URLSearchParams();
+
+        if (personagemId !== undefined && personagemId !== null && personagemId !== '') {
+            params.set('id', personagemId);
+        }
+
+        if (personagemNome) {
+            params.set('nome', personagemNome);
+        }
+
+        const navegarParaPersonagem = () => {
+            window.location.href = `./Personagem.html?${params.toString()}&id_jogo=${encodeURIComponent(jogoId ?? '')}&nome_jogo=${encodeURIComponent(jogoNome ?? '')}`;
+        };
+
+        cardPersonagem.addEventListener('click', navegarParaPersonagem);
+        cardPersonagem.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                navegarParaPersonagem();
+            }
+        });
+
         fragmento.appendChild(cardPersonagem);
     });
 
@@ -43,7 +75,7 @@ function renderizarPersonagens(personagens) {
 
 function ajustarTamanhoSecao() {
     const personagens = document.getElementById('personagens');
-    const ladoPersonagem = document.getElementById('lado_personagem');
+    const ladoPersonagem = document.getElementById('lado_personagem') || document.querySelector('.player-section');
     const container = document.getElementById('container_personagem');
     const cards = personagens.querySelectorAll('.card_character');
 
