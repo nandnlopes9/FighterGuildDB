@@ -21,13 +21,35 @@ function mostrarMsg(formId, texto, tipo) {
     msg.className = `form-msg ${tipo}`;
 }
 
-// Transforma o FormData em objeto, ignorando campos vazios (vira NULL no banco).
-function coletar(form) {
+async function coletar(form) {
     const obj = {};
-    new FormData(form).forEach((valor, chave) => {
-        if (valor !== '') obj[chave] = valor;
-    });
+    const dados = new FormData(form);
+
+    for (const [chave, valor] of dados.entries()) {
+        if (valor instanceof File && valor.size > 0) {
+            obj[chave] = valor;
+        } else if (valor !== '') {
+            obj[chave] = valor;
+        }
+    }
+
     return obj;
+}
+
+async function enviarImagensSeHouver(dados) {
+    const camposImagem = ['capa', 'icone'];
+
+    for (const campo of camposImagem) {
+        if (dados[campo] instanceof File) {
+            const resultado = await conexao.uploadImagem(dados[campo], campo === 'icone' ? 'icones' : 'capas');
+            if (resultado.erro) {
+                throw new Error(resultado.erro.message || `Falha ao enviar ${campo}`);
+            }
+            dados[campo] = resultado.url;
+        }
+    }
+
+    return dados;
 }
 
 // ---- Carrega os selects ----
@@ -49,9 +71,21 @@ async function carregarOpcoes() {
 document.querySelector('#form-jogo').addEventListener('submit', async (e) => {
     e.preventDefault();
     const form = e.target;
-    const registro = coletar(form);
+    const registro = await coletar(form);
 
-    const resultado = await conexao.insert('jogo', registro);
+    try {
+        const dadosComImagem = await enviarImagensSeHouver(registro);
+        const resultado = await conexao.insert('jogo', dadosComImagem);
+        if (!resultado || resultado.erro) {
+            mostrarMsg('form-jogo', `Erro ao salvar jogo: ${resultado?.erro?.message || 'desconhecido'}`, 'erro');
+            return;
+        }
+        mostrarMsg('form-jogo', `Jogo "${resultado[0].nome}" salvo com sucesso!`, 'sucesso');
+        form.reset();
+        carregarOpcoes();
+    } catch (erro) {
+        mostrarMsg('form-jogo', erro.message, 'erro');
+    }
     if (!resultado || resultado.erro) {
         mostrarMsg('form-jogo', `Erro ao salvar jogo: ${resultado?.erro?.message || 'desconhecido'}`, 'erro');
         return;
@@ -65,43 +99,49 @@ document.querySelector('#form-jogo').addEventListener('submit', async (e) => {
 document.querySelector('#form-personagem').addEventListener('submit', async (e) => {
     e.preventDefault();
     const form = e.target;
-    const dados = coletar(form);
+    const dados = await coletar(form);
 
-    // Separa os campos do personagem dos campos da relação personagem_jogo.
-    const personagem = {
-        nome: dados.nome,
-        id_arquetipo: Number(dados.id_arquetipo),
-    };
-    if (dados.historia) personagem.historia = dados.historia;
-    if (dados.icone) personagem.icone = dados.icone;
+    try {
+        const dadosComImagem = await enviarImagensSeHouver(dados);
 
-    const criado = await conexao.insert('personagem', personagem);
-    if (!criado || criado.erro) {
-        mostrarMsg('form-personagem', `Erro ao salvar personagem: ${criado?.erro?.message || 'desconhecido'}`, 'erro');
-        return;
-    }
-    const idPersonagem = criado[0].id;
-
-    // Cria a participação no jogo apenas se um jogo foi escolhido.
-    if (dados.id_jogo) {
-        const participacao = {
-            id_personagem: idPersonagem,
-            id_jogo: Number(dados.id_jogo),
-            dificuldade: Number(dados.dificuldade),
+        // Separa os campos do personagem dos campos da relação personagem_jogo.
+        const personagem = {
+            nome: dadosComImagem.nome,
+            id_arquetipo: Number(dadosComImagem.id_arquetipo),
         };
-        if (dados.vida) participacao.vida = Number(dados.vida);
-        if (dados.data_de_inclusao) participacao.data_de_inclusao = dados.data_de_inclusao;
+        if (dadosComImagem.historia) personagem.historia = dadosComImagem.historia;
+        if (dadosComImagem.icone) personagem.icone = dadosComImagem.icone;
 
-        const rel = await conexao.insert('personagem_jogo', participacao);
-        if (!rel || rel.erro) {
-            mostrarMsg('form-personagem',
-                `Personagem salvo, mas falhou a participação no jogo: ${rel?.erro?.message || 'desconhecido'}`, 'erro');
+        const criado = await conexao.insert('personagem', personagem);
+        if (!criado || criado.erro) {
+            mostrarMsg('form-personagem', `Erro ao salvar personagem: ${criado?.erro?.message || 'desconhecido'}`, 'erro');
             return;
         }
-    }
+        const idPersonagem = criado[0].id;
 
-    mostrarMsg('form-personagem', `Personagem "${criado[0].nome}" salvo com sucesso!`, 'sucesso');
-    form.reset();
+        // Cria a participação no jogo apenas se um jogo foi escolhido.
+        if (dadosComImagem.id_jogo) {
+            const participacao = {
+                id_personagem: idPersonagem,
+                id_jogo: Number(dadosComImagem.id_jogo),
+                dificuldade: Number(dadosComImagem.dificuldade),
+            };
+            if (dadosComImagem.vida) participacao.vida = Number(dadosComImagem.vida);
+            if (dadosComImagem.data_de_inclusao) participacao.data_de_inclusao = dadosComImagem.data_de_inclusao;
+
+            const rel = await conexao.insert('personagem_jogo', participacao);
+            if (!rel || rel.erro) {
+                mostrarMsg('form-personagem',
+                    `Personagem salvo, mas falhou a participação no jogo: ${rel?.erro?.message || 'desconhecido'}`, 'erro');
+                return;
+            }
+        }
+
+        mostrarMsg('form-personagem', `Personagem "${criado[0].nome}" salvo com sucesso!`, 'sucesso');
+        form.reset();
+    } catch (erro) {
+        mostrarMsg('form-personagem', erro.message, 'erro');
+    }
 });
 
 carregarOpcoes();
