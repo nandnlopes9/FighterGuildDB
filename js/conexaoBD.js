@@ -15,7 +15,7 @@ export async function selectIgual(tableName, colunas, atributo, valor) {
         console.error(error);
         return null;
     }
-    console.log(data);
+    return data;
 }
 
 export async function selectDif(tableName, colunas, atributo, valor) {
@@ -27,7 +27,7 @@ export async function selectDif(tableName, colunas, atributo, valor) {
         console.error(error);
         return null;
     }
-    console.log(data);
+    return data;
 }
 
 export async function select(tableName, colunas) {
@@ -38,5 +38,18 @@ export async function select(tableName, colunas) {
         console.error(error);
         return null;
     }
-    console.log(data);
+    return data;
+}
+
+// Insere um registro (objeto) na tabela e retorna a linha criada, ou null em erro.
+export async function insert(tableName, registro) {
+    const { data, error } = await supabaseClient
+        .from(`${tableName}`)
+        .insert(registro)
+        .select();
+    if(error){
+        console.error(error);
+        return { erro: error };
+    }
+    return data;
 }
