@@ -57,7 +57,11 @@ function renderizarPersonagens(personagens) {
     }
 
     personagens.forEach((personagem) => {
-        const cardPersonagem = document.createElement('article');
+        const idPersonagem = personagem?.id_personagem ?? personagem?.personagem?.id ?? '';
+        const cardPersonagem = document.createElement('a');
+        cardPersonagem.href = idPersonagem
+        ? `./PersonagemGolpes.html?id=${idPersonagem}`
+        : './PersonagemGolpes.html';
         cardPersonagem.className = 'card_character';
         const nomePersonagem = personagem?.personagem?.nome || 'Sem nome';
         cardPersonagem.innerHTML = `${criarSVG(personagem.icone || '')}<div class="personagem-nome">${nomePersonagem}</div>`;

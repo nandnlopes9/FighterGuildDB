@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fighters Guild DB - Golpes do Personagem</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/Personagem.css">
+    <link rel="stylesheet" href="./css/PersonagemGolpes.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <div class="logo-icon">🎮</div>
+                <span class="brand">FIGHTERS<br>GUILD DB</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="./TelaPrincipal.html">🏠</a></li>
+                <li><a href="./TelaJogos.html">Jogos</a></li>
+                <li><a href="./TelaPersonagens.html">PERSONAGENS</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="character-detail">
+        <section class="character-hero">
+            <div class="character-image-card">
+                <div id="character-image" class="character-image"></div>
+                <div class="character-meta">
+                    <h3 id="character-meta-name" class="character-meta-name"></h3>
+                    <p id="character-meta-archetype" class="character-meta-archetype">Arquetipo: </p>
+                    <p id="character-meta-inclusion" class="character-meta-difficulty">Data de inclusão: </p>
+                    <p id="character-meta-difficulty" class="character-meta-difficulty">Dificuldade: </p>
+                </div>
+            </div>
+
+            <div class="character-info-card">
+                <h1 id="character-name" class="character-name"></h1>
+                <p class="character-subtitle">Lista de golpes</p>
+                <div id="moves-list" class="moves-list"></div>
+            </div>
+        </section>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script type="module" src="./js/PersonagemGolpes.js"></script>
+</body>
+</html>

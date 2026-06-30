@@ -225,7 +225,7 @@ main {
     margin: 0;
 }
 
-#personagens > article:first-child{
+#personagens > a:first-child{
     margin: 0;
 }
 
@@ -267,7 +267,7 @@ main {
     right: 0;
     bottom: 0;
     z-index: 2;
-    padding: 0.6rem;
+    padding: 0.6rem 0.6rem 0.6rem 0;
     font-family: 'Orbitron', sans-serif;
     font-size: 0.8rem;
     font-weight: 800;
