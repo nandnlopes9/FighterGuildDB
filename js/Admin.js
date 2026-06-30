@@ -1,5 +1,34 @@
 import * as conexao from '../js/conexaoBD.js';
 
+const PLATAFORMAS_PREDEFINIDAS = [
+    'Super Nintendo (SNES)',
+    'Nintendo Entertainment System (NES)',
+    'Nintendo 64',
+    'Nintendo GameCube',
+    'Nintendo Wii',
+    'Nintendo Wii U',
+    'Nintendo Switch',
+    'Nintendo Switch 2',
+    'Dreamcast',
+    'PlayStation',
+    'PlayStation 2',
+    'PlayStation 3',
+    'PlayStation 4',
+    'PlayStation 5',
+    'PlayStation Portable (PSP)',
+    'PlayStation Vita',
+    'Xbox',
+    'Xbox 360',
+    'Xbox One',
+    'Xbox Series X|S',
+    'PC (Windows)',
+    'Linux',
+    'Neo Geo AES',
+    'Neo Geo MVS',
+    'Neo Geo CD',
+    'Mobile'
+];
+
 // A troca de abas fica num <script> comum no Admin.html (independente do Supabase),
 // para que a navegação funcione mesmo se a conexão com o banco falhar.
 
@@ -13,6 +42,20 @@ function preencherSelect(select, lista, valueKey, textKey, placeholder) {
         .map(item => `<option value="${item[valueKey]}">${item[textKey]}</option>`)
         .join('');
     select.innerHTML = `<option value="" disabled selected>${placeholder}</option>${opcoes}`;
+}
+
+function preencherCheckboxes(container, lista) {
+    if (!container) return;
+    if (!lista || lista.length === 0) {
+        container.innerHTML = '<span>Nenhuma plataforma disponível.</span>';
+        return;
+    }
+    container.innerHTML = lista.map(item => `
+        <label class="checkbox-item">
+            <input type="checkbox" name="plataformas" value="${item}">
+            <span>${item}</span>
+        </label>
+    `).join('');
 }
 
 function mostrarMsg(formId, texto, tipo) {
@@ -37,7 +80,7 @@ async function coletar(form) {
 }
 
 async function enviarImagensSeHouver(dados) {
-    const camposImagem = ['capa', 'icone'];
+    const camposImagem = ['capa', 'icone', 'icone_personagem_jogo'];
 
     for (const campo of camposImagem) {
         if (dados[campo] instanceof File) {
@@ -68,25 +111,74 @@ async function carregarOpcoes() {
         document.querySelector('#form-personagem select[name="id_jogo"]'),
         jogos, 'id', 'nome', 'Selecione um jogo'
     );
+
+    const containerPlataformas = document.querySelector('#plataformas-checkboxes');
+    if (containerPlataformas) {
+        preencherCheckboxes(containerPlataformas, PLATAFORMAS_PREDEFINIDAS);
+    }
 }
 
 // ---- Submit: Novo Jogo ----
 document.querySelector('#form-jogo').addEventListener('submit', async (e) => {
     e.preventDefault();
     const form = e.target;
-    const registro = await coletar(form);
-    let resultado = null;
 
     try {
+        const registro = await coletar(form);
         const dadosComImagem = await enviarImagensSeHouver(registro);
-        resultado = await conexao.insert('jogo', dadosComImagem);
+
+        // pega plataformas selecionadas
+        const plataformasSelecionadas = Array.from(
+            form.querySelectorAll('input[name="plataformas"]:checked')
+        )
+        .map(el => el.value)
+        .filter(Boolean);
+
+        // ❌ REMOVE plataformas do jogo (NÃO EXISTE NA TABELA)
+        delete dadosComImagem.plataformas;
+
+        // 1. INSERE O JOGO
+        const resultado = await conexao.insert('jogo', dadosComImagem);
+
         if (!resultado || resultado.erro) {
-            mostrarMsg('form-jogo', `Erro ao salvar jogo: ${resultado?.erro?.message || 'desconhecido'}`, 'erro');
+            mostrarMsg(
+                'form-jogo',
+                `Erro ao salvar jogo: ${resultado?.erro?.message || 'desconhecido'}`,
+                'erro'
+            );
             return;
         }
-        mostrarMsg('form-jogo', `Jogo "${resultado[0].nome}" salvo com sucesso!`, 'sucesso');
+
+        const jogoId = resultado[0].id;
+
+        // 2. INSERE PLATAFORMAS (se tiver selecionado)
+        if (plataformasSelecionadas.length > 0) {
+            const payloadPlataformas = plataformasSelecionadas.map(p => ({
+                id_jogo: jogoId,
+                plataforma: p
+            }));
+
+            const rel = await conexao.insert('plataforma', payloadPlataformas);
+
+            if (!rel || rel.erro) {
+                mostrarMsg(
+                    'form-jogo',
+                    `Jogo salvo, mas erro nas plataformas: ${rel?.erro?.message || 'desconhecido'}`,
+                    'erro'
+                );
+                return;
+            }
+        }
+
+        mostrarMsg(
+            'form-jogo',
+            `Jogo "${resultado[0].nome}" salvo com sucesso!`,
+            'sucesso'
+        );
+
         form.reset();
         carregarOpcoes();
+
     } catch (erro) {
         mostrarMsg('form-jogo', erro.message, 'erro');
     }
@@ -123,6 +215,7 @@ document.querySelector('#form-personagem').addEventListener('submit', async (e) 
                 id_jogo: Number(dadosComImagem.id_jogo),
                 dificuldade: Number(dadosComImagem.dificuldade),
             };
+            if (dadosComImagem.icone_personagem_jogo) participacao.icone = dadosComImagem.icone_personagem_jogo;
             if (dadosComImagem.vida) participacao.vida = Number(dadosComImagem.vida);
             if (dadosComImagem.data_de_inclusao) participacao.data_de_inclusao = dadosComImagem.data_de_inclusao;
 

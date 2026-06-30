@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fighters Guild DB - Inserir Plataforma</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/CRUD.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <div class="logo-icon">🎮</div>
+                <span class="brand">FIGHTERS<br>GUILD DB</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="../TelaPrincipal.html">🏠</a></li>
+                <li><a href="./CRUDMenu.html">CRUD</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="crud-shell">
+        <section class="card">
+            <span class="badge">INSERIR PLATAFORMA</span>
+            <h1>Nova plataforma</h1>
+            <form id="form-plataforma" autocomplete="off">
+                <label class="field">
+                    <span class="field-label">Nome</span>
+                    <input type="text" name="nome" required>
+                </label>
+                <button type="submit" class="btn-submit">Salvar plataforma</button>
+                <p id="feedback" class="form-feedback"></p>
+            </form>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script type="module" src="../js/InserirPlataforma.js"></script>
+</body>
+</html>

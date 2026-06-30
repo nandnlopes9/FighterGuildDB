@@ -57,6 +57,38 @@ export async function insert(tableName, dados) {
     return data ?? [];
 }
 
+export async function update(tableName, dados, id) {
+    if (!supabaseClient) {
+        console.error('Supabase não inicializado.');
+        return { erro: { message: 'Supabase não inicializado.' } };
+    }
+
+    const { data, error } = await supabaseClient.from(tableName).update(dados).eq('id', id).select();
+
+    if (error) {
+        console.error(error);
+        return { erro: error };
+    }
+
+    return data ?? [];
+}
+
+export async function deleteRecord(tableName, id) {
+    if (!supabaseClient) {
+        console.error('Supabase não inicializado.');
+        return { erro: { message: 'Supabase não inicializado.' } };
+    }
+
+    const { data, error } = await supabaseClient.from(tableName).delete().eq('id', id).select();
+
+    if (error) {
+        console.error(error);
+        return { erro: error };
+    }
+
+    return data ?? [];
+}
+
 export async function uploadImagemGolpe(arquivo, pasta = 'geral') {
     if (!supabaseClient) {
         return { erro: { message: 'Supabase não inicializado.' } };
