@@ -1,4 +1,4 @@
-import * as conexao from './js/conexaoBD.js';
+import * as conexao from './conexaoBD.js';
 
 const jogoSelect = document.getElementById('select-jogo');
 const personagemSelect = document.getElementById('select-personagem');
@@ -113,7 +113,7 @@ async function carregarJogos() {
     const jogos = await conexao.select('jogo', 'id, nome');
     const lista = jogos || [];
     preencherSelect(jogoSelect, lista, 'Selecione um jogo');
-}
+}   
 
 async function carregarPersonagens() {
     const personagens = await conexao.select('personagem', 'id, nome, icone');
@@ -162,23 +162,42 @@ personagemSelect.addEventListener('change', () => {
     atualizarPreview(personagem || null);
 });
 
-confirmarButton.addEventListener('click', () => {
+confirmarButton.addEventListener('click', async () => {
     if (!jogoSelect.value || !personagemSelect.value || !nomeComandoInput.value.trim() || !tipoComandoSelect.value || !comandoInput.value.trim()) {
         feedback.textContent = 'Preencha todos os campos para confirmar.';
         feedback.className = 'form-feedback erro';
         return;
     }
 
-    feedback.textContent = `Golpe "${nomeComandoInput.value.trim()}" (${tipoComandoSelect.value}) cadastrado para ${previewName.textContent}.`;
-    feedback.className = 'form-feedback sucesso';
-    nomeComandoInput.value = '';
-    tipoComandoSelect.value = 'Normal';
-    comandoInput.value = '';
-    ultimoGrupoInserido = null;
-    jogoSelect.value = '';
-    personagemSelect.innerHTML = '<option value="" disabled selected>Selecione um jogo primeiro</option>';
-    personagemSelect.disabled = true;
-    atualizarPreview(null);
+    const dadosGolpe = {
+        nome: nomeComandoInput.value.trim(),
+        tipo: tipoComandoSelect.value,
+        comando: comandoInput.value.trim(),
+        id_personagem_jogo: Number(personagemSelect.value),
+    };
+    try {
+        const resultado = await conexao.insert('golpe', dadosGolpe);
+
+        if (!resultado || resultado.length === 0) {
+            feedback.textContent = 'Não foi possível salvar o golpe no banco.';
+            feedback.className = 'form-feedback erro';
+            return;
+        }
+
+        feedback.textContent = `Golpe "${nomeComandoInput.value.trim()}" (${tipoComandoSelect.value}) cadastrado para ${previewName.textContent}.`;
+        feedback.className = 'form-feedback sucesso';
+        nomeComandoInput.value = '';
+        tipoComandoSelect.value = 'Normal';
+        comandoInput.value = '';
+        ultimoGrupoInserido = null;
+        jogoSelect.value = '';
+        personagemSelect.innerHTML = '<option value="" disabled selected>Selecione um jogo primeiro</option>';
+        personagemSelect.disabled = true;
+        atualizarPreview(null);
+    } catch (erro) {
+        feedback.textContent = `Erro ao salvar golpe: ${erro.message}`;
+        feedback.className = 'form-feedback erro';
+    }
 });
 
 async function iniciar() {
