@@ -8,8 +8,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./css/TelaPersonagens..css">
-    <script src="./js/TelaPersonagens.js"></script>
-    
 </head>
 <body>
     <header>
@@ -38,79 +36,7 @@
                 <div class="trending-section">
                     <h2 class="section-title">PERSONAGENS</h2>
                     <div class="game-grid">
-                        <div class="game-card">
-                            <div class="game-card-visual game-card-visual--street">
-                                <span>Nome</span>
-                            </div>
-                        </div>
-
-                        <div class="game-card">
-                            <div class="game-card-visual game-card-visual--street">
-                                <span>Nome</span>
-                            </div>
-                        </div>
-
                         
-                        <div class="game-card">
-                            <div class="game-card-visual game-card-visual--street">
-                                <span>Nome</span>
-                            </div>
-                        </div>
-
-                        
-                        <div class="game-card">
-                            <div class="game-card-visual game-card-visual--street">
-                                <span>Nome</span>
-                            </div>
-                        </div>
-                        
-                        <div class="game-card">
-                            <div class="game-card-visual game-card-visual--street">
-                                <span>Nome</span>
-                            </div>
-                        </div>
-                        <div class="game-card">
-                            <div class="game-card-visual game-card-visual--street">
-                                <span>Nome</span>
-                            </div>
-                        </div>
-                        <div class="game-card">
-                            <div class="game-card-visual game-card-visual--street">
-                                <span>Nome</span>
-                            </div>
-                        </div>
-                        <div class="game-card">
-                            <div class="game-card-visual game-card-visual--street">
-                                <span>Nome</span>
-                            </div>
-                        </div>
-                        <div class="game-card">
-                            <div class="game-card-visual game-card-visual--street">
-                                <span>Nome</span>
-                            </div>
-                        </div>
-                        <div class="game-card">
-                            <div class="game-card-visual game-card-visual--street">
-                                <span>Nome</span>
-                            </div>
-                        </div>
-                        <div class="game-card">
-                            <div class="game-card-visual game-card-visual--street">
-                                <span>Nome</span>
-                            </div>
-                        </div>
-                        <div class="game-card">
-                            <div class="game-card-visual game-card-visual--street">
-                                <span>Nome</span>
-                            </div>
-                        </div>
-                        <div class="game-card">
-                            <div class="game-card-visual game-card-visual--street">
-                                <span>Nome</span>
-                            </div>
-                        </div>
-
-
                     </div>
                 </div>
             </div>
@@ -122,32 +48,34 @@
 
                 <label>
                     <span>Movimento</span>
-                    <select>
+                    <select id="moviment_list">
                     </select>
                 </label>
 
                 <label>
                     <span>Jogo</span>
-                    <select>
+                    <select id="game_list">
                     </select>
                 </label>
 
                 <label>
                     <span>Arquetipo</span>
-                    <select>
+                    <select id="arquitype_list">
                     </select>
                 </label>
 
                 <label>
                     <span>Franquia</span>
-                    <select>
+                    <select id="franquia_list">
                       
                     </select>
                 </label>
+
+                <button id="reset-filters" class="filter-reset-btn" type="button">Resetar filtros</button>
             </aside>
         </div>
     </main>
-
-   
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script type="module" src="./js/TelaPersonagens.js"></script>
 </body>
 </html>
