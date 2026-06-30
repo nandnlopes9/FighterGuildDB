@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fighters Guild DB - Jogos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/TelaJogos.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <div class="logo-icon">🎮</div>
+                <span class="brand">FIGHTERS<br>GUILD DB</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="./TelaPrincipal.html">🏠</a></li>
+                <li><a href="./TelaJogos.html">Jogos</a></li>
+                <li><a href="./TelaPersonagens.html">Personagens</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="page-layout">
+            <div class="main-content">
+                <p class="banner-tagline">Todos os jogos. Todos os universos.</p>
+
+                <section class="search-section">
+                    <input id="search-jogo" type="text" placeholder="Buscar jogo por nome...">
+                </section>
+
+                <section class="trending-section">
+                    <h2 class="section-title">JOGOS</h2>
+                    <div id="jogos-grid" class="game-grid"></div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script type="module" src="./js/TelaJogos.js"></script>
+</body>
+</html>

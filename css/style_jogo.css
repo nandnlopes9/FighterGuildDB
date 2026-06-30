@@ -225,7 +225,7 @@ main {
     margin: 0;
 }
 
-#personagens > article:first-child{
+#personagens > a:first-child{
     margin: 0;
 }
 
@@ -236,13 +236,46 @@ main {
     margin-left: -1rem;
     position: relative;
     overflow: hidden;
+    
     filter: drop-shadow(0 0 10px purple);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     cursor: pointer;
 }
 
 .card_character:hover {
     transform: scale(1.08);
     z-index: 2;
+    filter: contrast(110%);
+}
+
+.card_character::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.5) 100%);
+    clip-path: polygon(
+        11% 0%, 
+        100% 0%, 
+        89% 100%, 
+        0% 100%);
+}
+
+.card_character .personagem-nome {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    padding: 0.6rem 0.6rem 0.6rem 0;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #ffffff;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9), 0 0 14px rgba(0, 0, 0, 0.7);
+    text-align: center;
 }
 
 .background {
