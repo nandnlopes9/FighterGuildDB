@@ -1,4 +1,4 @@
-import * as conexao from './conexaoBD.js';
+import * as conexao from '../js/conexaoBD.js';
 
 // A troca de abas fica num <script> comum no Admin.html (independente do Supabase),
 // para que a navegação funcione mesmo se a conexão com o banco falhar.
@@ -41,11 +41,14 @@ async function enviarImagensSeHouver(dados) {
 
     for (const campo of camposImagem) {
         if (dados[campo] instanceof File) {
-            const resultado = await conexao.uploadImagem(dados[campo], campo === 'icone' ? 'icones' : 'capas');
+            const resultado = await conexao.uploadImagemGolpe(dados[campo], campo === 'icone' ? 'icones' : 'capas');
             if (resultado.erro) {
                 throw new Error(resultado.erro.message || `Falha ao enviar ${campo}`);
             }
             dados[campo] = resultado.url;
+            if (campo === 'icone' && resultado.url) {
+                dados.icone = resultado.url;
+            }
         }
     }
 
@@ -72,10 +75,11 @@ document.querySelector('#form-jogo').addEventListener('submit', async (e) => {
     e.preventDefault();
     const form = e.target;
     const registro = await coletar(form);
+    let resultado = null;
 
     try {
         const dadosComImagem = await enviarImagensSeHouver(registro);
-        const resultado = await conexao.insert('jogo', dadosComImagem);
+        resultado = await conexao.insert('jogo', dadosComImagem);
         if (!resultado || resultado.erro) {
             mostrarMsg('form-jogo', `Erro ao salvar jogo: ${resultado?.erro?.message || 'desconhecido'}`, 'erro');
             return;
@@ -86,13 +90,6 @@ document.querySelector('#form-jogo').addEventListener('submit', async (e) => {
     } catch (erro) {
         mostrarMsg('form-jogo', erro.message, 'erro');
     }
-    if (!resultado || resultado.erro) {
-        mostrarMsg('form-jogo', `Erro ao salvar jogo: ${resultado?.erro?.message || 'desconhecido'}`, 'erro');
-        return;
-    }
-    mostrarMsg('form-jogo', `Jogo "${resultado[0].nome}" salvo com sucesso!`, 'sucesso');
-    form.reset();
-    carregarOpcoes(); // atualiza a lista de jogos do outro formulário
 });
 
 // ---- Submit: Novo Personagem (personagem + participação no jogo) ----

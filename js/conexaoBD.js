@@ -57,7 +57,7 @@ export async function insert(tableName, dados) {
     return data ?? [];
 }
 
-export async function uploadImagem(arquivo, pasta = 'geral') {
+export async function uploadImagemGolpe(arquivo, pasta = 'geral') {
     if (!supabaseClient) {
         return { erro: { message: 'Supabase não inicializado.' } };
     }
@@ -68,30 +68,21 @@ export async function uploadImagem(arquivo, pasta = 'geral') {
 
     const nomeArquivo = `${Date.now()}-${arquivo.name.replace(/\s+/g, '-').toLowerCase()}`;
     const caminho = `${pasta}/${nomeArquivo}`;
+    const bucket = 'Golpe';
 
-    for (const bucket of BUCKETS_STORAGE) {
-        const { data, error } = await supabaseClient.storage
-            .from(bucket)
-            .upload(caminho, arquivo, {
-                cacheControl: '3600',
-                upsert: false,
-                contentType: arquivo.type || 'application/octet-stream',
-            });
+    const { error } = await supabaseClient.storage
+        .from(bucket)
+        .upload(caminho, arquivo, {
+            cacheControl: '3600',
+            upsert: false,
+            contentType: arquivo.type || 'application/octet-stream',
+        });
 
-        if (!error) {
-            const { data: publicData } = supabaseClient.storage.from(bucket).getPublicUrl(caminho);
-            return { url: publicData?.publicUrl || null, caminho, bucket };
-        }
-
-        const mensagem = String(error?.message || '').toLowerCase();
-        if (!mensagem.includes('bucket') && !mensagem.includes('not found') && !mensagem.includes('does not exist')) {
-            return { erro: error };
-        }
+    if (error) {
+        console.error(error);
+        return { erro };
     }
 
-    return {
-        erro: {
-            message: 'Não foi possível encontrar um bucket de armazenamento válido no Supabase. Crie um bucket chamado "imagens".',
-        },
-    };
+    const { data: publicData } = supabaseClient.storage.from(bucket).getPublicUrl(caminho);
+    return { url: publicData?.publicUrl || null, caminho, bucket };
 }
