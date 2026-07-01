@@ -73,13 +73,13 @@ export async function update(tableName, dados, id) {
     return data ?? [];
 }
 
-export async function deleteRecord(tableName, id) {
+export async function deleteRecord(tableName, id, atributo='id') {
     if (!supabaseClient) {
         console.error('Supabase não inicializado.');
         return { erro: { message: 'Supabase não inicializado.' } };
     }
 
-    const { data, error } = await supabaseClient.from(tableName).delete().eq('id', id).select();
+    const { data, error } = await supabaseClient.from(tableName).delete().eq(atributo, id).select();
 
     if (error) {
         console.error(error);
