@@ -72,7 +72,7 @@ async function coletar(form) {
         if (valor instanceof File && valor.size > 0) {
             obj[chave] = valor;
         } else if (valor !== '') {
-            obj[chave] = valor;
+            obj[chave] = chave === 'dificuldade' ? Number(valor) : valor;
         }
     }
 
@@ -100,7 +100,7 @@ async function enviarImagensSeHouver(dados) {
 
 // ---- Carrega os selects ----
 async function carregarOpcoes() {
-    const arquetipos = await conexao.select('arquetipo', 'id, nome');
+    const arquetipos = await conexao.selectComFallback(['arquetipo', 'arquetipos', 'Arquetipo'], 'id, nome');
     preencherSelect(
         document.querySelector('#form-personagem select[name="id_arquetipo"]'),
         arquetipos, 'id', 'nome', 'Selecione um arquétipo'
@@ -213,8 +213,10 @@ document.querySelector('#form-personagem').addEventListener('submit', async (e) 
             const participacao = {
                 id_personagem: idPersonagem,
                 id_jogo: Number(dadosComImagem.id_jogo),
-                dificuldade: Number(dadosComImagem.dificuldade),
             };
+            if (dadosComImagem.dificuldade !== undefined && dadosComImagem.dificuldade !== '') {
+                participacao.dificuldade = Number(dadosComImagem.dificuldade);
+            }
             if (dadosComImagem.icone_personagem_jogo) participacao.icone = dadosComImagem.icone_personagem_jogo;
             if (dadosComImagem.vida) participacao.vida = Number(dadosComImagem.vida);
             if (dadosComImagem.data_de_inclusao) participacao.data_de_inclusao = dadosComImagem.data_de_inclusao;

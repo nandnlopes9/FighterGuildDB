@@ -91,11 +91,86 @@ main {
 
 .page-layout {
     display: flex;
-    justify-content: center;
+    gap: 2rem;
+    align-items: flex-start;
 }
 
 .main-content {
+    flex: 1;
+}
+
+.filters-panel {
+    width: 280px;
+    background: rgba(18, 13, 46, 0.75);
+    border: 1px solid rgba(139, 92, 246, 0.35);
+    border-radius: 18px;
+    padding: 1.25rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(10px);
+    position: sticky;
+    top: 1.5rem;
+}
+
+.filters-panel h3 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--accent-cyan);
+    margin-bottom: 1rem;
+}
+
+.filters-panel label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.filters-panel span {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+}
+
+.filters-panel select {
+    border: 1px solid rgba(139, 92, 246, 0.35);
+    border-radius: 10px;
+    padding: 0.7rem 0.8rem;
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.95rem;
+}
+
+.filters-panel select option {
+    color: #111827;
+    background: #ffffff;
+}
+
+.filter-reset-btn {
     width: 100%;
+    margin-top: 0.5rem;
+    padding: 0.8rem 1rem;
+    border: 1px solid rgba(139, 92, 246, 0.35);
+    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(236, 72, 153, 0.2));
+    color: var(--text-primary);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.filter-reset-btn:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent-cyan);
+    box-shadow: 0 8px 20px rgba(6, 182, 212, 0.2);
 }
 
 .banner-tagline {

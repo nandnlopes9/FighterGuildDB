@@ -170,7 +170,7 @@ main {
 }
 
 .checkbox-item input {
-    width: auto;
+    width: auto !important;
     accent-color: var(--accent-pink);
 }
 

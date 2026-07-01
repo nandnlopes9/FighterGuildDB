@@ -5,7 +5,20 @@ export const supabaseClient = window.supabase?.createClient
     ? window.supabase.createClient(supabaseUrl, supabaseKey)
     : null;
 
-const BUCKETS_STORAGE = ['imagens', 'images', 'fotos', 'uploads'];
+const BUCKETS_STORAGE = ['Golpe', 'images', 'imagens', 'fotos', 'uploads', 'capas', 'icones'];
+
+export function normalizarUrlImagem(valor) {
+    if (!valor || typeof valor !== 'string') return '';
+
+    const texto = valor.trim();
+    if (!texto) return '';
+    if (texto.startsWith('http://') || texto.startsWith('https://') || texto.startsWith('data:')) return texto;
+    if (texto.startsWith('/storage/')) {
+        return `https://qogwqralxlrdtewzcaum.supabase.co${texto}`;
+    }
+
+    return texto;
+}
 
 async function executarConsulta(tableName, colunas, { atributo, valor, operador = 'eq' } = {}) {
     if (!supabaseClient) {
@@ -39,6 +52,19 @@ export async function selectDif(tableName, colunas, atributo, valor) {
 
 export async function select(tableName, colunas) {
     return executarConsulta(tableName, colunas);
+}
+
+export async function selectComFallback(tabelas, colunas) {
+    const nomes = Array.isArray(tabelas) ? tabelas : [tabelas];
+
+    for (const nomeTabela of nomes) {
+        const dados = await executarConsulta(nomeTabela, colunas);
+        if (Array.isArray(dados) && dados.length > 0) {
+            return dados;
+        }
+    }
+
+    return [];
 }
 
 export async function insert(tableName, dados) {
@@ -89,7 +115,7 @@ export async function deleteRecord(tableName, id) {
     return data ?? [];
 }
 
-export async function uploadImagemGolpe(arquivo, pasta = 'geral') {
+export async function uploadImagemGolpe(arquivo, pasta = 'geral', bucketPreferido = 'Golpe') {
     if (!supabaseClient) {
         return { erro: { message: 'Supabase não inicializado.' } };
     }
@@ -100,21 +126,22 @@ export async function uploadImagemGolpe(arquivo, pasta = 'geral') {
 
     const nomeArquivo = `${Date.now()}-${arquivo.name.replace(/\s+/g, '-').toLowerCase()}`;
     const caminho = `${pasta}/${nomeArquivo}`;
-    const bucket = 'Golpe';
+    const buckets = [bucketPreferido, ...BUCKETS_STORAGE.filter((bucket) => bucket !== bucketPreferido)];
 
-    const { error } = await supabaseClient.storage
-        .from(bucket)
-        .upload(caminho, arquivo, {
-            cacheControl: '3600',
-            upsert: false,
-            contentType: arquivo.type || 'application/octet-stream',
-        });
+    for (const bucket of buckets) {
+        const { error } = await supabaseClient.storage
+            .from(bucket)
+            .upload(caminho, arquivo, {
+                cacheControl: '3600',
+                upsert: false,
+                contentType: arquivo.type || 'application/octet-stream',
+            });
 
-    if (error) {
-        console.error(error);
-        return { erro };
+        if (!error) {
+            const { data: publicData } = supabaseClient.storage.from(bucket).getPublicUrl(caminho);
+            return { url: publicData?.publicUrl || null, caminho, bucket };
+        }
     }
 
-    const { data: publicData } = supabaseClient.storage.from(bucket).getPublicUrl(caminho);
-    return { url: publicData?.publicUrl || null, caminho, bucket };
+    return { erro: { message: 'Não foi possível enviar a imagem para nenhum bucket disponível.' } };
 }

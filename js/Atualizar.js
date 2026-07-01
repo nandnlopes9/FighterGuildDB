@@ -325,7 +325,7 @@ async function carregarFormulario() {
                     payload[chave] = resultadoUpload.url;
                 }
             } else if (valor !== '') {
-                payload[chave] = valor;
+                payload[chave] = chave === 'dificuldade' ? Number(valor) : valor;
             }
         }
 

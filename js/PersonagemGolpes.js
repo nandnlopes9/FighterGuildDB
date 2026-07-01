@@ -1,5 +1,7 @@
 import * as conexao from './conexaoBD.js';
 
+const { normalizarUrlImagem } = conexao;
+
 function formatarData(data) {
     if (!data) return 'Não informada';
     const valor = new Date(data);
@@ -9,7 +11,7 @@ function formatarData(data) {
 
 function preencherDetalhes(personagem, participacao) {
     const nome = personagem?.nome || 'Sem nome';
-    const icone = participacao?.icone || '';
+    const icone = normalizarUrlImagem(participacao?.icone || '');
     const arquetipo = personagem?.arquetipo?.nome || 'Não informado';
     const nomeElemento = document.getElementById('character-meta-name');
     const titleElemento = document.getElementById('character-name');
@@ -59,17 +61,24 @@ function renderizarGolpes(golpes) {
 async function carregarPersonagemDetalhado() {
     const params = new URLSearchParams(window.location.search);
     const id = params.get('id');
+    const jogoId = params.get('jogoId');
 
     if (!id) {
         return;
     }
 
-    const personagens = await conexao.select('personagem', 'id, nome, arquetipo(nome)');
+    const [personagens, arquetipos] = await Promise.all([
+        conexao.select('personagem', 'id, nome, id_arquetipo'),
+        conexao.selectComFallback(['arquetipo', 'arquetipos', 'Arquetipo'], 'id, nome')
+    ]);
     const personagem = (personagens || []).find((item) => String(item.id) === String(id));
+    const arquetipo = (arquetipos || []).find((item) => String(item.id) === String(personagem?.id_arquetipo));
 
     if (!personagem) {
         return;
     }
+
+    const personagemComArquetipo = personagem ? { ...personagem, arquetipo: arquetipo || null } : null;
 
     const participacoes = await conexao.selectIgual(
         'personagem_jogo',
@@ -77,9 +86,11 @@ async function carregarPersonagemDetalhado() {
         'id_personagem',
         id
     );
-    const participacao = (participacoes || [])[0] || null;
+    const participacao = jogoId
+        ? (participacoes || []).find((item) => String(item.id_jogo) === String(jogoId)) || (participacoes || [])[0] || null
+        : (participacoes || [])[0] || null;
 
-    preencherDetalhes(personagem, participacao);
+    preencherDetalhes(personagemComArquetipo, participacao);
 
     const idsParticipacoes = (participacoes || []).map((item) => item.id);
     const golpes = await conexao.select('golpe', 'id, nome, tipo, comando, id_personagem_jogo');

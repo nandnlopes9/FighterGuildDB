@@ -12,12 +12,12 @@
 <body>
     <header>
         <nav>
-            <div class="logo">
+            <a href="../TelaPrincipal.html" class="logo" aria-label="Ir para a página inicial">
                 <div class="logo-icon">🎮</div>
                 <span class="brand">FIGHTERS<br>GUILD DB</span>
-            </div>
+            </a>
             <ul class="nav-links">
-                <li><a href="./TelaPrincipal.html">🏠</a></li>
+                <li><a href="../TelaPrincipal.html">Home</a></li>
                 <li><a href="../TelaJogos.html">Jogos</a></li>
                 <li><a href="./TelaPersonagens.html">PERSONAGENS</a></li>
                 <li><a href="./CRUDMenu.html">CRUD</a></li>
@@ -91,11 +91,7 @@
                 <span class="field-label">Ícone</span>
                 <input type="file" name="icone" accept="image/*">
             </label>
-            <label class="field">
-                <span class="field-label">Ícone do personagem em um jogo</span>
-                <input type="file" name="icone_personagem_jogo" accept="image/*">
-            </label>
-
+            
             <h3 class="form-section-title">Participação em um jogo</h3>
             <label class="field">
                 <span class="field-label">Jogo</span>
@@ -113,11 +109,11 @@
             </label>
             <label class="field">
                 <span class="field-label">Dificuldade</span>
-                <select name="dificuldade">
-                    <option value="1">Fácil (1)</option>
-                    <option value="2" selected>Média (2)</option>
-                    <option value="3">Difícil (3)</option>
-                </select>
+                <input type="number" name="dificuldade" min="0" step="0.1" placeholder="ex.: 2.5">
+            </label>
+            <label class="field">
+                <span class="field-label">Ícone do personagem em um jogo</span>
+                <input type="file" name="icone_personagem_jogo" accept="image/*">
             </label>
             <button type="submit" class="btn-salvar">Salvar Personagem</button>
             <p class="form-msg" data-for="form-personagem"></p>

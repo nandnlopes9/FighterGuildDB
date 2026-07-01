@@ -1,8 +1,10 @@
 import * as conexao from './conexaoBD.js';
 
+const { normalizarUrlImagem } = conexao;
+
 function criarCardJogo(jogo) {
     const nome = jogo?.nome || 'Sem nome';
-    const capa = jogo?.capa || '';
+    const capa = normalizarUrlImagem(jogo?.capa || jogo?.imagem || '');
     return `
         <a href="./TelaJogo.html?id=${jogo.id}" class="game-card-link">
             <div class="game-card">
@@ -26,11 +28,11 @@ function renderizarJogos(jogos) {
     container.innerHTML = jogos.map(criarCardJogo).join('');
 }
 
-function preencherDetalhes(personagem) {
+function preencherDetalhes(personagem, arquetipo) {
     const nome = personagem?.nome || 'Sem nome';
     const historia = personagem?.historia || 'História não informada.';
-    const icone = personagem?.icone || '';
-    const arquetipo = personagem?.arquetipo?.nome || 'Não informado';
+    const icone = normalizarUrlImagem(personagem?.icone || '');
+    const nomeArquetipo = arquetipo?.nome || 'Não informado';
 
     const nomeElemento = document.querySelector('.character-meta-name');
     const titleElemento = document.querySelector('.character-name');
@@ -41,7 +43,7 @@ function preencherDetalhes(personagem) {
     if (nomeElemento) nomeElemento.textContent = nome.toUpperCase();
     if (titleElemento) titleElemento.textContent = nome.toUpperCase();
     if (historiaElemento) historiaElemento.textContent = historia;
-    if (arquetipoElemento) arquetipoElemento.textContent = `Arquetipo: ${arquetipo}`;
+    if (arquetipoElemento) arquetipoElemento.textContent = `Arquetipo: ${nomeArquetipo}`;
     if (imageContainer) {
         imageContainer.innerHTML = icone
             ? `<img src="${icone}" alt="${nome}" class="character-image__img">`
@@ -57,14 +59,18 @@ async function carregarPersonagemDetalhado() {
         return;
     }
 
-    const personagens = await conexao.select('personagem', 'id, nome, historia, icone, arquetipo(nome)');
+    const [personagens, arquetipos] = await Promise.all([
+        conexao.select('personagem', 'id, nome, historia, icone, id_arquetipo'),
+        conexao.select('arquetipo', 'id, nome')
+    ]);
     const personagem = (personagens || []).find((item) => String(item.id) === String(id));
+    const arquetipo = (arquetipos || []).find((item) => String(item.id) === String(personagem?.id_arquetipo));
 
     if (!personagem) {
         return;
     }
 
-    preencherDetalhes(personagem);
+    preencherDetalhes(personagem, arquetipo);
 
     const relacoes = await conexao.selectIgual('personagem_jogo', 'id_jogo', 'id_personagem', id);
     const idsJogos = (relacoes || []).map((item) => item.id_jogo);

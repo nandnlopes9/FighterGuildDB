@@ -8,18 +8,19 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./css/TelaPrincipal..css">
-    <script src="./js/TelaInicial.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script type="module" src="./js/TelaInicial.js"></script>
     
 </head>
 <body>
     <header>
         <nav>
-            <div class="logo">
+            <a href="./TelaPrincipal.html" class="logo" aria-label="Ir para a página inicial">
                 <div class="logo-icon">🎮</div>
                 <span class="brand">FIGHTERS<br>GUILD DB</span>
-            </div>
+            </a>
             <ul class="nav-links">
-                <li><a href="./TelaPrincipal.html">🏠</a></li>
+                <li><a href="./TelaPrincipal.html">Home</a></li>
                 <li><a href="./TelaJogos.html">Jogos</a></li>
                 <!-- <li><a href="#tier">Tier Lists</a></li> -->
                 <!-- <li><a href="#community">Community</a></li> -->
@@ -33,9 +34,9 @@
             <h1>LISTA DE COMANDOS DATABASE</h1>
         </div>
 
-        <div class="character-banner">
-            <div class="graphic-banner">
-                <span>FIGHTER ROSTER</span>
+        <div class="character-banner" >
+            <div class="graphic-banner" >
+                <img src="Marquee.png" alt="" style="height: 100%; width: 100%;">
             </div>
         </div>
 
@@ -47,18 +48,16 @@
         <div class="destaque">
             <div class="featured-section">
                 <h2 class="section-title">Destaque</h2>
-                <div class="featured-card">
+                <div id="featured-card" class="featured-card">
                     <div class="featured-card-graphic">
-                        <span class="featured-card-title">2KO</span>
-                        <span class="featured-card-subtitle">NEW CHAMP</span>
-                        <span class="featured-card-accent">CAITLYN</span>
+                        <span class="featured-card-title">CARREGANDO</span>
+                        <span class="featured-card-subtitle">NOVO CAMPEÃO</span>
+                        <span class="featured-card-accent">...</span>
                     </div>
                     <div class="featured-info">
-                        <p class="featured-label">ARCHETIP: ZONER</p>
-                        <p class="featured-difficulty">DIFICULT: 4/5</p>
-                        <button class="moveset-badge">
+                        <p class="featured-label">Aguarde...</p>
+                        <p class="featured-difficulty">Carregando dados...</p>
                         <span class="moveset-badge">🎮 MOVESET</span>
-                        </button>
                     </div>
                 </div>
             </div>
@@ -68,62 +67,7 @@
             <!-- ATUALIZAÇÓES RESCENTES-->
             <div class="featured-section">
                 <h2 class="section-title">Atualizações Recentes</h2>
-                
-                
-                <div class="update-item">
-                    <div class="update-avatar">
-                        <span>K</span>
-                    </div>
-                    <div class="update-info">
-                        <div class="update-name">KEN</div>
-                        <div class="update-game">FATAL FURY</div>
-                    </div>
-                    <button class="moveset-badge">MOVESET</button>
-    
-                </div>
-
-                   <div class="update-item">
-                    <div class="update-avatar">
-                        <span>K</span>
-                    </div>
-                    <div class="update-info">
-                        <div class="update-name">KEN</div>
-                        <div class="update-game">FATAL FURY</div>
-                    </div>
-                    <button class="moveset-badge">MOVESET</button>
-    
-                </div>
-
-                   <div class="update-item">
-                    <div class="update-avatar">
-                        <span>K</span>
-                    </div>
-                    <div class="update-info">
-                        <div class="update-name">KEN</div>
-                        <div class="update-game">FATAL FURY</div>
-                    </div>
-                    <button class="moveset-badge">MOVESET</button>
-    
-                </div>
-
-                   <div class="update-item">
-                    <div class="update-avatar">
-                        <span>K</span>
-                    </div>
-                    <div class="update-info">
-                        <div class="update-name">KEN</div>
-                        <div class="update-game">FATAL FURY</div>
-                    </div>
-                    <button class="moveset-badge">MOVESET</button>
-    
-                </div>
-                
-
-                
-
-               
-
-                
+                <div id="updates-list" class="updates-list"></div>
             </div>
         </div>
 
@@ -131,42 +75,7 @@
         <!--Trending Games-->
         <div class="trending-section">
             <h2 class="section-title">TRENDING GAMES</h2>
-            <div class="game-grid">
-                <div class="game-card">
-                    <div class="game-card-visual game-card-visual--street">
-                        <span>STREET<br>FIGHTER 6</span>
-                    </div>
-                </div>
-
-                <div class="game-card">
-                    <div class="game-card-visual game-card-visual--multiversus">
-                        <span>MULTIVERSUS</span>
-                    </div>
-                </div>
-                  <div class="game-card">
-                    <div class="game-card-visual game-card-visual--multiversus">
-                        <span>MULTIVERSUS</span>
-                    </div>
-                </div>
-
-                <div class="game-card">
-                    <div class="game-card-visual game-card-visual--tekken">
-                        <span>TEKKEN 8</span>
-                    </div>
-                </div>
-
-                <div class="game-card">
-                    <div class="game-card-visual game-card-visual--dbf">
-                        <span>DRAGON BALL<br>FIGHTERZ</span>
-                    </div>
-                </div>
-
-                <div class="game-card">
-                    <div class="game-card-visual game-card-visual--mk1">
-                        <span>MORTAL<br>KOMBAT 1</span>
-                    </div>
-                </div>
-            </div>
+            <div id="games-grid" class="game-grid"></div>
         </div>
     </main>
 

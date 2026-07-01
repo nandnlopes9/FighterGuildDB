@@ -256,6 +256,8 @@
             padding: 1.5rem;
             color: white;
             background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            background-size: cover;
+            background-position: center;
         }
 
         .featured-card-title {
@@ -303,6 +305,8 @@
             text-align: center;
             color: white;
             overflow: hidden;
+            background-size: cover;
+            background-position: center;
         }
 
         .game-card-visual::before {
@@ -312,14 +316,25 @@
             z-index: 0;
         }
 
+        .game-card-visual img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+            display: block;
+        }
+
         .game-card-visual span {
             position: relative;
-            z-index: 1;
+            z-index: 2;
             font-family: 'Orbitron', sans-serif;
             font-size: 1.125rem;
             font-weight: 900;
             line-height: 1.2;
             text-transform: uppercase;
+            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.85);
         }
 
         .game-card-visual--street::before {
