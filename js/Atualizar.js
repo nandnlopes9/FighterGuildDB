@@ -143,6 +143,42 @@ function limparForm() {
     container.innerHTML = '';
 }
 
+async function sincronizarPlataformasDoJogo(idJogo, plataformasSelecionadas = []) {
+    if (!conexao.supabaseClient) {
+        return { erro: { message: 'Supabase não inicializado.' } };
+    }
+
+    const { error: erroDelete } = await conexao.supabaseClient
+        .from('plataforma')
+        .delete()
+        .eq('id_jogo', idJogo);
+
+    if (erroDelete) {
+        console.error(erroDelete);
+        return { erro: erroDelete };
+    }
+
+    if (!plataformasSelecionadas.length) {
+        return { ok: true };
+    }
+
+    const payloadPlataformas = plataformasSelecionadas.map((plataforma) => ({
+        id_jogo: Number(idJogo),
+        plataforma,
+    }));
+
+    const { error: erroInsert } = await conexao.supabaseClient
+        .from('plataforma')
+        .insert(payloadPlataformas);
+
+    if (erroInsert) {
+        console.error(erroInsert);
+        return { erro: erroInsert };
+    }
+
+    return { ok: true };
+}
+
 async function carregarOpcoes() {
     const [jogos, personagens, arquetipos, participacoes] = await Promise.all([
         conexao.select('jogo', 'id, nome'),
@@ -197,10 +233,17 @@ async function carregarFormulario() {
     if (!id) return;
 
     let registro = null;
+    let plataformasDoRegistro = [];
     switch (tipo) {
-        case 'jogo':
-            registro = (await conexao.selectIgual('jogo', 'id, nome, franquia, desenvolvedora, genero, data_lancamento, capa', 'id', id))[0];
+        case 'jogo': {
+            const [registroJogo, plataformas] = await Promise.all([
+                conexao.selectIgual('jogo', 'id, nome, franquia, desenvolvedora, genero, data_lancamento, capa', 'id', id),
+                conexao.selectIgual('plataforma', 'plataforma', 'id_jogo', id),
+            ]);
+            registro = registroJogo?.[0] || null;
+            plataformasDoRegistro = (plataformas || []).map((item) => item.plataforma).filter(Boolean);
             break;
+        }
         case 'personagem':
             registro = (await conexao.selectIgual('personagem', 'id, nome, id_arquetipo, historia, icone', 'id', id))[0];
             break;
@@ -228,7 +271,7 @@ async function carregarFormulario() {
         form.appendChild(criarCampo('Gênero', 'genero', registro.genero));
         form.appendChild(criarCampo('Data de lançamento', 'data_lancamento', registro.data_lancamento, 'date'));
         form.appendChild(criarCampoArquivo('Capa', 'capa'));
-        form.appendChild(criarCheckboxes('Plataformas', 'plataformas', PLATAFORMAS_PREDEFINIDAS, normalizarPlataformas(registro.plataformas)));
+        form.appendChild(criarCheckboxes('Plataformas', 'plataformas', PLATAFORMAS_PREDEFINIDAS, normalizarPlataformas(plataformasDoRegistro)));
     } else if (tipo === 'personagem') {
         form.appendChild(criarCampo('Nome', 'nome', registro.nome));
         form.appendChild(criarSelect('Arquétipo', 'id_arquetipo', cache.arquetipos.map((item) => ({ value: item.id, text: item.nome })), registro.id_arquetipo));
@@ -330,10 +373,22 @@ async function carregarFormulario() {
         }
 
         if (tipo === 'jogo') {
-            payload.plataformas = plataformasSelecionadas;
             const resultado = await conexao.update(tipo, payload, id);
-            feedback.textContent = resultado?.erro ? `Erro: ${resultado.erro.message}` : 'Registro atualizado com sucesso.';
-            feedback.className = `form-feedback ${resultado?.erro ? 'erro' : 'sucesso'}`;
+            if (resultado?.erro) {
+                feedback.textContent = `Erro: ${resultado.erro.message}`;
+                feedback.className = 'form-feedback erro';
+                return;
+            }
+
+            const plataformasAtualizadas = await sincronizarPlataformasDoJogo(id, plataformasSelecionadas);
+            if (plataformasAtualizadas?.erro) {
+                feedback.textContent = `Erro ao atualizar plataformas: ${plataformasAtualizadas.erro.message || 'Erro desconhecido'}`;
+                feedback.className = 'form-feedback erro';
+                return;
+            }
+
+            feedback.textContent = 'Registro atualizado com sucesso.';
+            feedback.className = 'form-feedback sucesso';
             return;
         }
 
