@@ -31,6 +31,7 @@
             <div class="admin-tabs">
                 <button class="admin-tab is-active" data-target="form-jogo">NOVO JOGO</button>
                 <button class="admin-tab" data-target="form-personagem">NOVO PERSONAGEM</button>
+                <button class="admin-tab" data-target="form-personagem-jogo">PERSONAGEM NO JOGO</button>
             </div>
         </div>
 
@@ -91,8 +92,19 @@
                 <span class="field-label">Ícone</span>
                 <input type="file" name="icone" accept="image/*">
             </label>
-            
+            <button type="submit" class="btn-salvar">Salvar Personagem</button>
+            <p class="form-msg" data-for="form-personagem"></p>
+        </form>
+
+        <!-- PERSONAGEM NO JOGO -->
+        <form id="form-personagem-jogo" class="admin-form" autocomplete="off">
             <h3 class="form-section-title">Participação em um jogo</h3>
+            <label class="field">
+                <span class="field-label">Personagem</span>
+                <select name="id_personagem" required>
+                    <option value="" disabled selected>Carregando...</option>
+                </select>
+            </label>
             <label class="field">
                 <span class="field-label">Jogo</span>
                 <select name="id_jogo" required>
@@ -115,8 +127,8 @@
                 <span class="field-label">Ícone do personagem em um jogo</span>
                 <input type="file" name="icone_personagem_jogo" accept="image/*">
             </label>
-            <button type="submit" class="btn-salvar">Salvar Personagem</button>
-            <p class="form-msg" data-for="form-personagem"></p>
+            <button type="submit" class="btn-salvar">Salvar Participação</button>
+            <p class="form-msg" data-for="form-personagem-jogo"></p>
         </form>
     </main>
 
