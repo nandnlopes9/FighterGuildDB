@@ -116,12 +116,6 @@ async function carregarJogos() {
     preencherSelect(jogoSelect, lista, 'Selecione um jogo');
 }   
 
-async function carregarPersonagens() {
-    // SELECT id, nome, icone FROM personagem
-    const personagens = await conexao.select('personagem', 'id, nome, icone');
-    todosOsPersonagens = personagens || [];
-}
-
 async function carregarPersonagensPorJogo(idJogo) {
     if (!idJogo) {
         personagemSelect.innerHTML = '<option value="" disabled selected>Selecione um jogo primeiro</option>';
@@ -130,19 +124,33 @@ async function carregarPersonagensPorJogo(idJogo) {
         return;
     }
 
-    // SELECT id_personagem FROM personagem_jogo WHERE id_jogo = ...
-    const relacoes = await conexao.selectIgual('personagem_jogo', 'id_personagem', 'id_jogo', idJogo);
-    const ids = (relacoes || []).map(item => item.id_personagem);
-    const personagens = todosOsPersonagens.filter(personagem => ids.includes(personagem.id));
+    // SELECT personagem_jogo.id, personagem.id, personagem.nome, personagem.icone
+    // FROM personagem_jogo
+    // JOIN personagem ON personagem.id = personagem_jogo.id_personagem
+    // WHERE personagem_jogo.id_jogo = ...
+    const relacoes = await conexao.selectIgual(
+        'personagem_jogo',
+        'id, personagem(id, nome, icone)',
+        'id_jogo',
+        idJogo
+    );
 
-    if (personagens.length === 0) {
+    const participacoes = (relacoes || []).map((item) => ({
+        id: item.id,
+        nome: item.personagem?.nome || 'Personagem desconhecido',
+        icone: item.personagem?.icone || '',
+    }));
+
+    todosOsPersonagens = participacoes;
+
+    if (participacoes.length === 0) {
         personagemSelect.innerHTML = '<option value="" disabled selected>Nenhum personagem encontrado</option>';
         personagemSelect.disabled = true;
         atualizarPreview(null);
         return;
     }
 
-    preencherSelect(personagemSelect, personagens, 'Selecione um personagem');
+    preencherSelect(personagemSelect, participacoes, 'Selecione um personagem');
     personagemSelect.disabled = false;
     atualizarPreview(null);
 }
@@ -178,6 +186,7 @@ confirmarButton.addEventListener('click', async () => {
         comando: comandoInput.value.trim(),
         id_personagem_jogo: Number(personagemSelect.value),
     };
+    console.log('Dados do golpe a serem inseridos:', dadosGolpe.id_personagem_jogo);
     try {
         // INSERT INTO golpe (nome, tipo, comando, id_personagem_jogo) VALUES (...)
         const resultado = await conexao.insert('golpe', dadosGolpe);
@@ -207,7 +216,6 @@ confirmarButton.addEventListener('click', async () => {
 async function iniciar() {
     resetarPreview();
     renderizarBotoesDeComando();
-    await carregarPersonagens();
     await carregarJogos();
 }
 
