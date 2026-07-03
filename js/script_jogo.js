@@ -13,8 +13,10 @@ async function carregarDados() {
     const idJogo = params.get('id');
 
     const dadosJogo = idJogo
-        ? await conexao.selectIgual('jogo', '*', 'id', Number(idJogo))
-        : await conexao.select('jogo', '*');
+        ? // SELECT * FROM jogo WHERE id = ...
+          await conexao.selectIgual('jogo', '*', 'id', Number(idJogo))
+        : // SELECT * FROM jogo
+          await conexao.select('jogo', '*');
 
     const jogo = (dadosJogo || [])?.[0];
 
@@ -25,12 +27,19 @@ async function carregarDados() {
 
     atualizaDadosPg(jogo);
 
-    const dadosPersonagem = await conexao.selectIgual(
-        'personagem_jogo',
-        'id_personagem, id_jogo, icone, personagem(nome, historia)',
-        'id_jogo',
-        jogo.id
+    // SELECT personagem_jogo.id_personagem,
+    //        personagem_jogo.id_jogo,
+    //        personagem_jogo.icone,
+    //        personagem.nome,
+    // FROM personagem_jogo
+    // JOIN personagem ON personagem.id = personagem_jogo.id_personagem
+    // WHERE personagem_jogo.id_jogo = ...
+    const {data, error} = await conexao.supabaseClient.rpc(
+        'personagem_por_jogo',
+        {p_id_jogo: Number(idJogo)}
     );
+    const dadosPersonagem = data ? data : [];
+    console.log('Dados do personagem:', dadosPersonagem);
 
     renderizarPersonagens(dadosPersonagem ?? []);
 }
@@ -48,6 +57,7 @@ function atualizaDadosPg(jogo) {
 }
 
 function renderizarPersonagens(personagens) {
+    console.log('Personagens a renderizar:', personagens);
     const fragmento = document.createDocumentFragment();
 
     if (!personagens || personagens.length === 0) {
@@ -57,13 +67,13 @@ function renderizarPersonagens(personagens) {
     }
 
     personagens.forEach((personagem) => {
-        const idPersonagem = personagem?.id_personagem ?? personagem?.personagem?.id ?? '';
+        const idPersonagem = personagem?.id_personagem ?? personagem?.personagens[0].id ?? '';
         const cardPersonagem = document.createElement('a');
         cardPersonagem.href = idPersonagem
         ? `./PersonagemGolpes.html?id=${idPersonagem}`
         : './PersonagemGolpes.html';
         cardPersonagem.className = 'card_character';
-        const nomePersonagem = personagem?.personagem?.nome || 'Sem nome';
+        const nomePersonagem = personagem?.personagens[0].nome || 'Sem nome';
         cardPersonagem.innerHTML = `${criarSVG(personagem.icone || '')}<div class="personagem-nome">${nomePersonagem}</div>`;
         fragmento.appendChild(cardPersonagem);
     });

@@ -60,7 +60,9 @@ async function carregarPersonagemDetalhado() {
     }
 
     const [personagens, arquetipos] = await Promise.all([
+        // SELECT id, nome, historia, icone, id_arquetipo FROM personagem
         conexao.select('personagem', 'id, nome, historia, icone, id_arquetipo'),
+        // SELECT id, nome FROM arquetipo
         conexao.select('arquetipo', 'id, nome')
     ]);
     const personagem = (personagens || []).find((item) => String(item.id) === String(id));
@@ -72,8 +74,10 @@ async function carregarPersonagemDetalhado() {
 
     preencherDetalhes(personagem, arquetipo);
 
+    // SELECT id_jogo FROM personagem_jogo WHERE id_personagem = ...
     const relacoes = await conexao.selectIgual('personagem_jogo', 'id_jogo', 'id_personagem', id);
     const idsJogos = (relacoes || []).map((item) => item.id_jogo);
+    // SELECT id, nome, capa FROM jogo
     const jogos = await conexao.select('jogo', 'id, nome, capa');
     const jogosDoPersonagem = (jogos || []).filter((jogo) => idsJogos.includes(jogo.id));
 

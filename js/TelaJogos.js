@@ -69,7 +69,9 @@ function aplicarFiltros() {
 
 async function carregarJogos() {
     const [jogos, plataformas] = await Promise.all([
+        // SELECT id, nome, capa, genero FROM jogo
         conexao.select('jogo', 'id, nome, capa, genero'),
+        // SELECT id_jogo, plataforma FROM plataforma
         conexao.select('plataforma', 'id_jogo, plataforma'),
     ]);
 

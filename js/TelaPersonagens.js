@@ -124,10 +124,15 @@ function aplicarFiltros() {
 
 async function carregarDados() {
     const [personagens, relacoes, jogos, arquetipos, golpes] = await Promise.all([
+        // SELECT id, nome, icone, id_arquetipo FROM personagem
         conexao.select('personagem', 'id, nome, icone, id_arquetipo'),
+        // SELECT id_personagem, id_jogo, id FROM personagem_jogo
         conexao.select('personagem_jogo', 'id_personagem, id_jogo, id'),
+        // SELECT id, nome, franquia FROM jogo
         conexao.select('jogo', 'id, nome, franquia'),
+        // SELECT id, nome FROM arquetipo
         conexao.select('arquetipo', 'id, nome'),
+        // SELECT * FROM lista_movimentos
         conexao.select('lista_movimentos', '*'),
     ]);
 

@@ -11,6 +11,7 @@ form.addEventListener('submit', async (event) => {
         if (valor !== '') payload[chave] = valor;
     });
 
+    // INSERT INTO arquetipo (...) VALUES (...)
     const resultado = await conexao.insert('arquetipo', payload);
     if (resultado?.erro) {
         feedback.textContent = `Erro: ${resultado.erro.message}`;

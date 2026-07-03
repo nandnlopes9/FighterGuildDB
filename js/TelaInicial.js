@@ -107,9 +107,13 @@ function preencherDestaque(item) {
 
 async function carregarConteudoInicial() {
     const [participacoes, personagens, jogos, arquetipos] = await Promise.all([
+        // SELECT id, id_personagem, id_jogo, icone, data_de_inclusao, dificuldade FROM personagem_jogo
         conexao.select('personagem_jogo', 'id, id_personagem, id_jogo, icone, data_de_inclusao, dificuldade'),
+        // SELECT id, nome, icone, id_arquetipo FROM personagem
         conexao.select('personagem', 'id, nome, icone, id_arquetipo'),
+        // SELECT id, nome, capa FROM jogo
         conexao.select('jogo', 'id, nome, capa'),
+        // SELECT id, nome FROM arquetipo
         conexao.selectComFallback(['arquetipo', 'arquetipos', 'Arquetipo'], 'id, nome')
     ]);
 

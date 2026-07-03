@@ -80,6 +80,7 @@ async function carregarPersonagemDetalhado() {
 
     const personagemComArquetipo = personagem ? { ...personagem, arquetipo: arquetipo || null } : null;
 
+    // SELECT id, id_personagem, id_jogo, dificuldade, data_de_inclusao, icone FROM personagem_jogo WHERE id_personagem = ...
     const participacoes = await conexao.selectIgual(
         'personagem_jogo',
         'id, id_personagem, id_jogo, dificuldade, data_de_inclusao, icone',
@@ -93,6 +94,7 @@ async function carregarPersonagemDetalhado() {
     preencherDetalhes(personagemComArquetipo, participacao);
 
     const idsParticipacoes = (participacoes || []).map((item) => item.id);
+    // SELECT id, nome, tipo, comando, id_personagem_jogo FROM golpe
     const golpes = await conexao.select('golpe', 'id, nome, tipo, comando, id_personagem_jogo');
     const golpesDoPersonagem = (golpes || []).filter((golpe) => idsParticipacoes.includes(golpe.id_personagem_jogo));
 

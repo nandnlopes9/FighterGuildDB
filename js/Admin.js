@@ -100,18 +100,21 @@ async function enviarImagensSeHouver(dados) {
 
 // ---- Carrega os selects ----
 async function carregarOpcoes() {
+    // SELECT id, nome FROM arquetipo
     const arquetipos = await conexao.selectComFallback(['arquetipo', 'arquetipos', 'Arquetipo'], 'id, nome');
     preencherSelect(
         document.querySelector('#form-personagem select[name="id_arquetipo"]'),
         arquetipos, 'id', 'nome', 'Selecione um arquétipo'
     );
 
+    // SELECT id, nome FROM jogo
     const jogos = await conexao.select('jogo', 'id, nome');
     preencherSelect(
         document.querySelector('#form-personagem-jogo select[name="id_jogo"]'),
         jogos, 'id', 'nome', 'Selecione um jogo'
     );
 
+    // SELECT id, nome FROM personagem
     const personagens = await conexao.select('personagem', 'id, nome');
     preencherSelect(
         document.querySelector('#form-personagem-jogo select[name="id_personagem"]'),
@@ -143,7 +146,7 @@ document.querySelector('#form-jogo').addEventListener('submit', async (e) => {
         // ❌ REMOVE plataformas do jogo (NÃO EXISTE NA TABELA)
         delete dadosComImagem.plataformas;
 
-        // 1. INSERE O JOGO
+        // INSERT INTO jogo (...) VALUES (...)
         const resultado = await conexao.insert('jogo', dadosComImagem);
 
         if (!resultado || resultado.erro) {
@@ -157,7 +160,8 @@ document.querySelector('#form-jogo').addEventListener('submit', async (e) => {
 
         const jogoId = resultado[0].id;
 
-        // 2. INSERE PLATAFORMAS (se tiver selecionado)
+        // INSERT INTO plataforma (id_jogo, plataforma) VALUES (...)
+        // INSERT multiple plataforma rows
         if (plataformasSelecionadas.length > 0) {
             const payloadPlataformas = plataformasSelecionadas.map(p => ({
                 id_jogo: jogoId,
@@ -206,6 +210,7 @@ document.querySelector('#form-personagem').addEventListener('submit', async (e) 
         if (dadosComImagem.historia) personagem.historia = dadosComImagem.historia;
         if (dadosComImagem.icone) personagem.icone = dadosComImagem.icone;
 
+        // INSERT INTO personagem (nome, id_arquetipo, historia, icone) VALUES (...)
         const criado = await conexao.insert('personagem', personagem);
         if (!criado || criado.erro) {
             mostrarMsg('form-personagem', `Erro ao salvar personagem: ${criado?.erro?.message || 'desconhecido'}`, 'erro');
@@ -240,6 +245,7 @@ document.querySelector('#form-personagem-jogo').addEventListener('submit', async
         }
         if (dadosComImagem.icone_personagem_jogo) participacao.icone = dadosComImagem.icone_personagem_jogo;
 
+        // INSERT INTO personagem_jogo (id_personagem, id_jogo, data_de_inclusao, vida, dificuldade, icone) VALUES (...)
         const resultado = await conexao.insert('personagem_jogo', participacao);
         if (!resultado || resultado.erro) {
             mostrarMsg('form-personagem-jogo', `Erro ao salvar participação: ${resultado?.erro?.message || 'desconhecido'}`, 'erro');

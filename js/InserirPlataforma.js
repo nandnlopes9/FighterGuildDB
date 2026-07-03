@@ -16,6 +16,7 @@ form.addEventListener('submit', async (event) => {
         delete payload.nome;
     }
 
+    // INSERT INTO plataforma (...) VALUES (...)
     const resultado = await conexao.insert('plataforma', payload);
     if (resultado?.erro) {
         feedback.textContent = `Erro: ${resultado.erro.message}`;

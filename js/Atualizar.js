@@ -181,9 +181,13 @@ async function sincronizarPlataformasDoJogo(idJogo, plataformasSelecionadas = []
 
 async function carregarOpcoes() {
     const [jogos, personagens, arquetipos, participacoes] = await Promise.all([
+        // SELECT id, nome FROM jogo
         conexao.select('jogo', 'id, nome'),
+        // SELECT id, nome FROM personagem
         conexao.select('personagem', 'id, nome'),
+        // SELECT id, nome FROM arquetipo
         conexao.select('arquetipo', 'id, nome'),
+        // SELECT id, id_personagem, id_jogo FROM personagem_jogo
         conexao.select('personagem_jogo', 'id, id_personagem, id_jogo'),
     ]);
     cache.jogos = jogos || [];
@@ -197,18 +201,23 @@ async function carregarRegistros() {
     let dados = [];
     switch (tipo) {
         case 'jogo':
+            // SELECT id, nome FROM jogo
             dados = await conexao.select('jogo', 'id, nome');
             break;
         case 'personagem':
+            // SELECT id, nome FROM personagem
             dados = await conexao.select('personagem', 'id, nome');
             break;
         case 'personagem_jogo':
+            // SELECT id, id_personagem, id_jogo FROM personagem_jogo
             dados = await conexao.select('personagem_jogo', 'id, id_personagem, id_jogo');
             break;
         case 'golpe':
+            // SELECT id, nome, tipo, id_personagem_jogo FROM golpe
             dados = await conexao.select('golpe', 'id, nome, tipo, id_personagem_jogo');
             break;
         case 'arquetipo':
+            // SELECT id, nome FROM arquetipo
             dados = await conexao.select('arquetipo', 'id, nome');
             break;
     }
@@ -237,7 +246,9 @@ async function carregarFormulario() {
     switch (tipo) {
         case 'jogo': {
             const [registroJogo, plataformas] = await Promise.all([
+                // SELECT id, nome, franquia, desenvolvedora, genero, data_lancamento, capa FROM jogo WHERE id = ...
                 conexao.selectIgual('jogo', 'id, nome, franquia, desenvolvedora, genero, data_lancamento, capa', 'id', id),
+                // SELECT plataforma FROM plataforma WHERE id_jogo = ...
                 conexao.selectIgual('plataforma', 'plataforma', 'id_jogo', id),
             ]);
             registro = registroJogo?.[0] || null;
@@ -245,15 +256,19 @@ async function carregarFormulario() {
             break;
         }
         case 'personagem':
+            // SELECT id, nome, id_arquetipo, historia, icone FROM personagem WHERE id = ...
             registro = (await conexao.selectIgual('personagem', 'id, nome, id_arquetipo, historia, icone', 'id', id))[0];
             break;
         case 'personagem_jogo':
+            // SELECT id, id_personagem, id_jogo, vida, dificuldade, data_de_inclusao FROM personagem_jogo WHERE id = ...
             registro = (await conexao.selectIgual('personagem_jogo', 'id, id_personagem, id_jogo, vida, dificuldade, data_de_inclusao', 'id', id))[0];
             break;
         case 'golpe':
+            // SELECT id, nome, tipo, comando, id_personagem_jogo FROM golpe WHERE id = ...
             registro = (await conexao.selectIgual('golpe', 'id, nome, tipo, comando, id_personagem_jogo', 'id', id))[0];
             break;
         case 'arquetipo':
+            // SELECT id, nome, descricao FROM arquetipo WHERE id = ...
             registro = (await conexao.selectIgual('arquetipo', 'id, nome, descricao', 'id', id))[0];
             break;
     }
@@ -373,6 +388,7 @@ async function carregarFormulario() {
         }
 
         if (tipo === 'jogo') {
+            // UPDATE jogo SET ... WHERE id = ...
             const resultado = await conexao.update(tipo, payload, id);
             if (resultado?.erro) {
                 feedback.textContent = `Erro: ${resultado.erro.message}`;
@@ -397,6 +413,7 @@ async function carregarFormulario() {
             delete payload.icone_personagem_jogo;
         }
 
+        // UPDATE <tipo> SET ... WHERE id = ...
         const resultado = await conexao.update(tipo, payload, id);
         feedback.textContent = resultado?.erro ? `Erro: ${resultado.erro.message}` : 'Registro atualizado com sucesso.';
         feedback.className = `form-feedback ${resultado?.erro ? 'erro' : 'sucesso'}`;

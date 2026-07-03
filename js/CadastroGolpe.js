@@ -110,12 +110,14 @@ function renderizarBotoesDeComando() {
 }
 
 async function carregarJogos() {
+    // SELECT id, nome FROM jogo
     const jogos = await conexao.select('jogo', 'id, nome');
     const lista = jogos || [];
     preencherSelect(jogoSelect, lista, 'Selecione um jogo');
 }   
 
 async function carregarPersonagens() {
+    // SELECT id, nome, icone FROM personagem
     const personagens = await conexao.select('personagem', 'id, nome, icone');
     todosOsPersonagens = personagens || [];
 }
@@ -128,6 +130,7 @@ async function carregarPersonagensPorJogo(idJogo) {
         return;
     }
 
+    // SELECT id_personagem FROM personagem_jogo WHERE id_jogo = ...
     const relacoes = await conexao.selectIgual('personagem_jogo', 'id_personagem', 'id_jogo', idJogo);
     const ids = (relacoes || []).map(item => item.id_personagem);
     const personagens = todosOsPersonagens.filter(personagem => ids.includes(personagem.id));
@@ -176,6 +179,7 @@ confirmarButton.addEventListener('click', async () => {
         id_personagem_jogo: Number(personagemSelect.value),
     };
     try {
+        // INSERT INTO golpe (nome, tipo, comando, id_personagem_jogo) VALUES (...)
         const resultado = await conexao.insert('golpe', dadosGolpe);
 
         if (!resultado || resultado.length === 0) {
