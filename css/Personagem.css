@@ -263,7 +263,7 @@ main {
     overflow: hidden;
     border-radius: 15px;
     background-position: center;
-    background-size: contain;
+    background-size: contain !important;
     background: linear-gradient(180deg, #3b82f6 0%, #1e40af 100%);
 }
 
